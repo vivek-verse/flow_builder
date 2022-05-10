@@ -5,7 +5,6 @@ export interface TrayWidgetProps {
 	children?:React.ReactNode;
 }
 
-
 namespace S {
 	export const Tray = styled.div`
 		min-width:150px;
