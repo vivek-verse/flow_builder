@@ -9,11 +9,34 @@ export class Application {
 	constructor() {
 		this.diagramEngine = SRD.default();
 		this.newModel();
-	}   
+	}
+	   
+	public getModel(){
+		return this.diagramEngine.getModel();
+	}
 
 	public newModel() {
 		this.activeModel = new SRD.DiagramModel();
 		this.diagramEngine.setModel(this.activeModel);
+		const model = this.diagramEngine.getModel();
+
+		model.registerListener({
+			eventDidFire : () => {
+				console.log("Event did fire");
+			},
+			linksUpdated : () => {
+				console.log("Links upated");
+			},
+			nodesUpdated : () => {
+				console.log("Nodes upated");
+			},
+			gridUpdated: e => console.log("gridUpdated", e),
+			offsetUpdated: e => console.log("offsetUpdated", e),
+			entityRemoved: e => console.log("entityRemoved", e),
+			selectionChanged: e => console.log("selectionChanged", e)
+		})
+
+
 		this.diagramEngine.getNodeFactories().registerFactory(new CustomNodeFactory());
 		//3-A) create a default node
 		const node1 = new SRD.DefaultNodeModel('Node 1', 'rgb(0,192,255)');
@@ -23,6 +46,7 @@ export class Application {
 		//3-B) create another default node
 		const node2 = new SRD.DefaultNodeModel('Node 2', 'rgb(192,255,0)');
 		let port2 = node2.addInPort('In');
+		node2.addOutPort('Out');
 		node2.setPosition(400, 100);
 
 		const node3 = new CustomNodeModel();
@@ -32,6 +56,7 @@ export class Application {
 		let link1 = port.link(port2);
 
 		this.activeModel.addAll(node1, node2, node3, link1);
+
 	}
 
 	public getActiveDiagram(): SRD.DiagramModel {

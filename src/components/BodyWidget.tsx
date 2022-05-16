@@ -45,7 +45,15 @@ namespace S {
 export class BodyWidget extends React.Component<BodyWidgetProps> {
 	render() {
 		return (
-			<S.Body>
+			<S.Body onMouseUp={() => {
+				const model = this.props.app.getModel();
+				const listLink = Object.values(model.getLinks());
+				listLink.forEach(link => {
+					if(!link.getTargetPort()){
+						model.removeLink(link);
+					}
+				});
+			}}>
 				<S.Header>
 					<div className="title">Flow Builder</div>
 				</S.Header>

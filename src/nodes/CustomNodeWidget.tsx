@@ -59,7 +59,7 @@ export class CustomNodeWidget extends React.Component<CustomNodeWidgetProps> {
 						<Select defaultValue={nameList[0]} style={{ display:'flex', marginTop:'5px' }} onChange={handleChange}>
 							{
 								nameList.map((item) => {
-									return <Option value={item}>{item}</Option>
+									return <Option key={item} value={item}>{item}</Option>
 
 								})
 							}
