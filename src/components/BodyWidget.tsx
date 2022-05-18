@@ -6,8 +6,12 @@ import { TrayItemWidget } from './TrayItemWidget';
 import { DefaultNodeModel } from '@projectstorm/react-diagrams';
 import styled from '@emotion/styled';
 import { CanvasDragToggle } from './CanvasDragToggle';
-import { CustomNodeModel } from '../nodes/CustomNodeModel';
+import { OneToOneNodeModel } from '../nodes/OneToOne';
 
+import { Collapse } from 'antd';
+import { OneToOneOutlined } from '@ant-design/icons';
+
+const { Panel } = Collapse;
 export interface BodyWidgetProps {
 	app: Application;
 }
@@ -40,8 +44,18 @@ namespace S {
 		position: relative;
 		flex-grow: 1;
 	`;
-}
 
+	export const CollapseStyle = {
+		"color": "white",
+		"fontFamily": "Helvetica, Arial",
+		"padding": "5px",
+		"margin": "0px 10px",
+		"border": "solid 1px",
+		"borderRadius": "5px",
+		"marginBottom": "2px",
+		"cursor": "pointer",
+	};
+}
 export class BodyWidget extends React.Component<BodyWidgetProps> {
 	render() {
 		return (
@@ -62,13 +76,20 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 						<TrayItemWidget model={{ type: 'in' }} name="In Node" color="rgb(192,255,0)" />
 						<TrayItemWidget model={{ type: 'out' }} name="Out Node" color="rgb(0,192,255)" />
 						<TrayItemWidget model={{ type: 'custom' }} name="Custom Node" color="rgb(147, 112, 219)" />
+						<Collapse style= {S.CollapseStyle} defaultActiveKey={['1']} onChange={() => {}}>
+							<Panel header="Custom Nodes" key="1">
+								<div style={{padding: "5px", backgroundColor : "#00C0FF", borderRadius : "5px", width : "30px", height : "30px", textAlign: "center", display:"table"}}>
+									<OneToOneOutlined style={{ fontSize : "25px", display: "table-cell", verticalAlign: "middle", textAlign: "center"}}/>
+								</div>
+							</Panel>
+						</Collapse>
 					</TrayWidget>
 					<S.Layer
 						onDrop={(event) => {
 							const data = JSON.parse(event.dataTransfer.getData('storm-diagram-node'));
 							const nodesCount = _.keys(this.props.app.getDiagramEngine().getModel().getNodes()).length;
 
-							let node: DefaultNodeModel | CustomNodeModel | null = null;
+							let node: DefaultNodeModel | OneToOneNodeModel | null = null;
 							if (data.type === 'in') {
 								node = new DefaultNodeModel('Node ' + (nodesCount + 1), 'rgb(192,255,0)');
 								if(node instanceof DefaultNodeModel){
@@ -80,7 +101,7 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 									node.addOutPort('Out');
 								}
 							}else{
-								node = new CustomNodeModel();
+								node = new OneToOneNodeModel();
 							}
 							const point = this.props.app.getDiagramEngine().getRelativeMousePoint(event);
 							node.setPosition(point);

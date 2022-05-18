@@ -4,7 +4,7 @@ import { DiagramEngine, PortModelAlignment, PortWidget } from '@projectstorm/rea
 import styled from '@emotion/styled';
 import { Card, Select, Skeleton, Avatar } from 'antd';
 import { EditOutlined, EllipsisOutlined, SettingOutlined } from '@ant-design/icons';
-import nameList from '../static/nameList';
+import nameList from '../../static/nameList';
 
 const { Option } = Select;
 const { Meta, Grid } = Card;

@@ -1,6 +1,5 @@
 import * as SRD from '@projectstorm/react-diagrams';
-import { CustomNodeFactory } from './nodes/CustomNodeFactory';
-import { CustomNodeModel } from './nodes/CustomNodeModel';
+import { OneToOneNodeFactory, OneToOneNodeModel } from './nodes/OneToOne';
 
 export class Application {
 	protected activeModel: SRD.DiagramModel;
@@ -37,7 +36,7 @@ export class Application {
 		})
 
 
-		this.diagramEngine.getNodeFactories().registerFactory(new CustomNodeFactory());
+		this.diagramEngine.getNodeFactories().registerFactory(new OneToOneNodeFactory());
 		//3-A) create a default node
 		const node1 = new SRD.DefaultNodeModel('Node 1', 'rgb(0,192,255)');
 		let port = node1.addOutPort('Out');
@@ -49,7 +48,7 @@ export class Application {
 		node2.addOutPort('Out');
 		node2.setPosition(400, 100);
 
-		const node3 = new CustomNodeModel();
+		const node3 = new OneToOneNodeModel();
 		node3.setPosition(250, 200);
 
 		// link the ports

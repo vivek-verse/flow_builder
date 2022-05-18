@@ -4,15 +4,11 @@ import { AbstractReactFactory, GenerateModelEvent, GenerateWidgetEvent } from '@
 import { DiagramEngine } from '@projectstorm/react-diagrams-core';
 
 export class CustomNodeFactory extends AbstractReactFactory<CustomNodeModel, DiagramEngine> {
-  constructor() {
-    super('custom');
-  }
-
   generateReactWidget(event : GenerateWidgetEvent<CustomNodeModel>): JSX.Element {
     return <CustomNodeWidget engine={this.engine} size={50} node={event.model} />;
   }
 
   generateModel(event : GenerateModelEvent) {
-    return new CustomNodeModel();
+    return new CustomNodeModel('custom');
   }
 }

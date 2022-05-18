@@ -6,13 +6,13 @@ export interface CustomNodeModelGenerics {
 }
 
 export class CustomNodeModel extends NodeModel<NodeModelGenerics & CustomNodeModelGenerics> {
-  constructor() {
+  constructor(type : string) {
     super({
-      type: 'custom'
+      type
     });
-    this.addPort(new CustomPortModel(PortModelAlignment.TOP));
-    this.addPort(new CustomPortModel(PortModelAlignment.LEFT));
-    this.addPort(new CustomPortModel(PortModelAlignment.BOTTOM));
-    this.addPort(new CustomPortModel(PortModelAlignment.RIGHT));
+    this.addPort(new CustomPortModel(PortModelAlignment.TOP, type));
+    this.addPort(new CustomPortModel(PortModelAlignment.LEFT, type));
+    this.addPort(new CustomPortModel(PortModelAlignment.BOTTOM, type));
+    this.addPort(new CustomPortModel(PortModelAlignment.RIGHT, type));
   }
 }
