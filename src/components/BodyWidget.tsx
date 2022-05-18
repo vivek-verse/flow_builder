@@ -2,7 +2,6 @@ import * as React from 'react';
 import * as _ from 'lodash';
 import { TrayWidget } from './TrayWidget';
 import { Application } from '../Application';
-import { TrayItemWidget } from './TrayItemWidget';
 import { DefaultNodeModel } from '@projectstorm/react-diagrams';
 import styled from '@emotion/styled';
 import { CanvasDragToggle } from './CanvasDragToggle';
@@ -10,6 +9,7 @@ import { OneToOneNodeModel } from '../nodes/OneToOne';
 
 import { Collapse } from 'antd';
 import { OneToOneOutlined } from '@ant-design/icons';
+import { CustomNodeIcon } from './CustomNodeIcon';
 
 const { Panel } = Collapse;
 export interface BodyWidgetProps {
@@ -73,14 +73,11 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 				</S.Header>
 				<S.Content>
 					<TrayWidget>
-						<TrayItemWidget model={{ type: 'in' }} name="In Node" color="rgb(192,255,0)" />
-						<TrayItemWidget model={{ type: 'out' }} name="Out Node" color="rgb(0,192,255)" />
-						<TrayItemWidget model={{ type: 'custom' }} name="Custom Node" color="rgb(147, 112, 219)" />
 						<Collapse style= {S.CollapseStyle} defaultActiveKey={['1']} onChange={() => {}}>
 							<Panel header="Custom Nodes" key="1">
-								<div style={{padding: "5px", backgroundColor : "#00C0FF", borderRadius : "5px", width : "30px", height : "30px", textAlign: "center", display:"table"}}>
+								<CustomNodeIcon model={{type : 'OneToOne'}} name="OneToOne">
 									<OneToOneOutlined style={{ fontSize : "25px", display: "table-cell", verticalAlign: "middle", textAlign: "center"}}/>
-								</div>
+								</CustomNodeIcon>
 							</Panel>
 						</Collapse>
 					</TrayWidget>

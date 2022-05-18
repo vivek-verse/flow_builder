@@ -2,13 +2,7 @@ import * as React from 'react';
 import { CustomNodeModel } from './CustomNodeModel';
 import { DiagramEngine, PortModelAlignment, PortWidget } from '@projectstorm/react-diagrams';
 import styled from '@emotion/styled';
-import { Card, Select, Skeleton, Avatar } from 'antd';
-import { EditOutlined, EllipsisOutlined, SettingOutlined } from '@ant-design/icons';
-import nameList from '../../static/nameList';
-
-const { Option } = Select;
-const { Meta, Grid } = Card;
-
+import { OneToOneOutlined } from '@ant-design/icons';
 export interface CustomNodeWidgetProps {
 	node: CustomNodeModel;
 	engine: DiagramEngine;
@@ -17,8 +11,8 @@ export interface CustomNodeWidgetProps {
 
 namespace S {
 	export const Port = styled.div`
-		width: 16px;
-		height: 16px;
+		width: 12px;
+		height: 12px;
 		z-index: 10;
 		background: rgba(0, 0, 0, 0.5);
 		border-radius: 8px;
@@ -30,46 +24,18 @@ namespace S {
 	`;
 }
 
-function handleChange(value : string) {
-  console.log(`selected ${value}`);
-}
-
 export class CustomNodeWidget extends React.Component<CustomNodeWidgetProps> {
 	render() {
-
-		const width = 250;
-
+        const width  = 30;
 		return (
 			<>
-
-				<Card
-				style={{ width }}
-				hoverable
-				// actions={[
-				// 	<SettingOutlined key="setting" />,
-				// 	<EditOutlined key="edit" />,
-				// ]}
-				>
-					<Skeleton loading={false} avatar active>
-						<Meta
-						// avatar={<Avatar src="https://joeschmoe.io/api/v1/random" />}
-						title="Select Name"
-						description="Select a name"
-						/>
-						<Select defaultValue={nameList[0]} style={{ display:'flex', marginTop:'5px' }} onChange={handleChange}>
-							{
-								nameList.map((item) => {
-									return <Option key={item} value={item}>{item}</Option>
-
-								})
-							}
-						</Select>
-					</Skeleton>
-				</Card>
+                <div style={{padding: "5px", backgroundColor : "#00C0FF", borderRadius : "5px", width : "30px", height : "30px", textAlign: "center", display:"table"}}>
+                    <OneToOneOutlined style={{ fontSize : "25px", display: "table-cell", verticalAlign: "middle", textAlign: "center"}}/>
+                </div>
 
 				<PortWidget
 					style={{
-						left: width / 2  - this.props.size / 4,
+						left: width / 4  + 3,
 						top: -8,
 						position: 'absolute'
 					}}
@@ -80,8 +46,8 @@ export class CustomNodeWidget extends React.Component<CustomNodeWidgetProps> {
 				</PortWidget>
 				<PortWidget
 					style={{
-						left: width / 2  - this.props.size / 4,
-						bottom: -this.props.size / 4,
+						left: width / 4 + 3,
+						bottom: -this.props.size / 8,
 						position: 'absolute'
 					}}
                     //@ts-ignore
