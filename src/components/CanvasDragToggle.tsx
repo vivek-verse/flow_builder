@@ -29,7 +29,8 @@ export class CanvasDragToggle extends React.Component<any, any> {
 					</HelperButton>,
 					<HelperButton key={2} onClick={this.disableDrag}>
 						Disable canvas drag
-					</HelperButton>
+					</HelperButton>,
+					<HelperButton onClick={this.props.autoDistribute}>Re-distribute</HelperButton>
 				]}>
 				<HelperCanvasWidget>
 					<CanvasWidget engine={engine} />

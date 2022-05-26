@@ -51,6 +51,8 @@
     ]
   },
   "devDependencies": {
+    "@types/dagre": "^0.7.47",
+    "@types/graphlib": "^2.1.8",
     "@types/lodash": "^4.14.182"
   }
 }

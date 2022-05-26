@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as _ from 'lodash';
 import { TrayWidget } from './TrayWidget';
 import { Application } from '../Application';
-import { DefaultNodeModel } from '@projectstorm/react-diagrams';
+import { DagreEngine, DefaultNodeModel, PathFindingLinkFactory } from '@projectstorm/react-diagrams';
 import styled from '@emotion/styled';
 import { CanvasDragToggle } from './CanvasDragToggle';
 import { OneToOneNodeModel } from '../nodes/OneToOne';
@@ -57,6 +57,41 @@ namespace S {
 	};
 }
 export class BodyWidget extends React.Component<BodyWidgetProps> {
+
+	engine: DagreEngine;
+
+	constructor(props : any) {
+		super(props.app);
+		this.engine = new DagreEngine({
+			graph: {
+				rankdir: 'RL',
+				ranker: 'longest-path',
+				marginx: 25,
+				marginy: 25
+			},
+			includeLinks: true
+		});
+	}
+
+	autoDistribute = () => {
+		this.engine.redistribute(this.props.app.getModel());
+		this.reroute();
+		this.props.app.getDiagramEngine().repaintCanvas();
+	};
+
+	componentDidMount(): void {
+		setTimeout(() => {
+			this.autoDistribute();
+		}, 0);
+	}
+
+	reroute() {
+		this.props.app.getDiagramEngine()
+			.getLinkFactories()
+			.getFactory<PathFindingLinkFactory>(PathFindingLinkFactory.NAME)
+			.calculateRoutingMatrix();
+	}
+
 	render() {
 		return (
 			<S.Body onMouseUp={() => {
@@ -108,7 +143,7 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 						onDragOver={(event) => {
 							event.preventDefault();
 						}}>
-						<CanvasDragToggle engine={this.props.app.getDiagramEngine()} />
+						<CanvasDragToggle engine={this.props.app.getDiagramEngine()} autoDistribute={this.autoDistribute} />
 					</S.Layer>
 				</S.Content>
 			</S.Body>
