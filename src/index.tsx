@@ -8,7 +8,7 @@ import { BodyWidget } from './components/BodyWidget';
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
 const app = new Application();
 root.render(
-	<BodyWidget app={app}/>
+	<BodyWidget engine={app.getDiagramEngine()} model={app.getDiagramEngine().getModel()}/>
 );
 
 reportWebVitals();

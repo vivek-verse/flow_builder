@@ -1,8 +1,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import { TrayWidget } from './TrayWidget';
-import { Application } from '../Application';
-import { DagreEngine, DefaultNodeModel, PathFindingLinkFactory } from '@projectstorm/react-diagrams';
+import { DagreEngine, DefaultNodeModel, PathFindingLinkFactory, DiagramEngine, DiagramModel } from '@projectstorm/react-diagrams';
 import styled from '@emotion/styled';
 import { CanvasDragToggle } from './CanvasDragToggle';
 import { OneToOneNodeModel } from '../nodes/OneToOne';
@@ -13,7 +12,8 @@ import { CustomNodeIcon } from './CustomNodeIcon';
 
 const { Panel } = Collapse;
 export interface BodyWidgetProps {
-	app: Application;
+	engine : DiagramEngine;
+	model : DiagramModel;
 }
 
 namespace S {
@@ -60,8 +60,8 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 
 	engine: DagreEngine;
 
-	constructor(props : any) {
-		super(props.app);
+	constructor(props : BodyWidgetProps) {
+		super(props);
 		this.engine = new DagreEngine({
 			graph: {
 				rankdir: 'RL',
@@ -74,9 +74,9 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 	}
 
 	autoDistribute = () => {
-		this.engine.redistribute(this.props.app.getModel());
+		this.engine.redistribute(this.props.model);
 		this.reroute();
-		this.props.app.getDiagramEngine().repaintCanvas();
+		this.props.engine.repaintCanvas();
 	};
 
 	componentDidMount(): void {
@@ -86,7 +86,7 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 	}
 
 	reroute() {
-		this.props.app.getDiagramEngine()
+		this.props.engine
 			.getLinkFactories()
 			.getFactory<PathFindingLinkFactory>(PathFindingLinkFactory.NAME)
 			.calculateRoutingMatrix();
@@ -95,7 +95,7 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 	render() {
 		return (
 			<S.Body onMouseUp={() => {
-				const model = this.props.app.getModel();
+				const model = this.props.model;
 				const listLink = Object.values(model.getLinks());
 				listLink.forEach(link => {
 					if(!link.getTargetPort()){
@@ -119,7 +119,7 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 					<S.Layer
 						onDrop={(event) => {
 							const data = JSON.parse(event.dataTransfer.getData('storm-diagram-node'));
-							const nodesCount = _.keys(this.props.app.getDiagramEngine().getModel().getNodes()).length;
+							const nodesCount = _.keys(this.props.model.getNodes()).length;
 
 							let node: DefaultNodeModel | OneToOneNodeModel | null = null;
 							if (data.type === 'in') {
@@ -135,15 +135,15 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 							}else{
 								node = new OneToOneNodeModel();
 							}
-							const point = this.props.app.getDiagramEngine().getRelativeMousePoint(event);
+							const point = this.props.engine.getRelativeMousePoint(event);
 							node.setPosition(point);
-							this.props.app.getDiagramEngine().getModel().addNode(node);
+							this.props.model.addNode(node);
 							this.forceUpdate();
 						}}
 						onDragOver={(event) => {
 							event.preventDefault();
 						}}>
-						<CanvasDragToggle engine={this.props.app.getDiagramEngine()} autoDistribute={this.autoDistribute} />
+						<CanvasDragToggle engine={this.props.engine} autoDistribute={this.autoDistribute} />
 					</S.Layer>
 				</S.Content>
 			</S.Body>

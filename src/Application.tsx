@@ -21,18 +21,18 @@ export class Application {
 
 		model.registerListener({
 			eventDidFire : () => {
-				console.log("Event did fire");
+				// console.log("Event did fire");
 			},
 			linksUpdated : () => {
-				console.log("Links upated");
+				// console.log("Links upated");
 			},
 			nodesUpdated : () => {
-				console.log("Nodes upated");
+				// console.log("Nodes upated");
 			},
-			gridUpdated: e => console.log("gridUpdated", e),
-			offsetUpdated: e => console.log("offsetUpdated", e),
-			entityRemoved: e => console.log("entityRemoved", e),
-			selectionChanged: e => console.log("selectionChanged", e)
+			// gridUpdated: e => console.log("gridUpdated", e),
+			// offsetUpdated: e => console.log("offsetUpdated", e),
+			// entityRemoved: e => console.log("entityRemoved", e),
+			// selectionChanged: e => console.log("selectionChanged", e)
 		})
 
 
