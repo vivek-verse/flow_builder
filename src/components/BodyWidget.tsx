@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import { TrayWidget } from './TrayWidget';
-import { DagreEngine, DefaultNodeModel, PathFindingLinkFactory, DiagramEngine, DiagramModel } from '@projectstorm/react-diagrams';
+import { DagreEngine, DefaultNodeModel, PathFindingLinkFactory, DiagramEngine, DiagramModel, DefaultLinkModel } from '@projectstorm/react-diagrams';
 import styled from '@emotion/styled';
 import { CanvasDragToggle } from './CanvasDragToggle';
 import { OneToOneNodeModel } from '../nodes/OneToOne';
@@ -100,6 +100,23 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 				listLink.forEach(link => {
 					if(!link.getTargetPort()){
 						model.removeLink(link);
+					}
+				});
+				this.props.model.getModels().forEach(model => {
+					if(!(model instanceof DefaultLinkModel)){
+						const modelId = model.getID();
+						console.log("model or the icon id : ", modelId);
+						const modelNode = this.props.model.getNode(modelId);
+						const { top, bottom } = modelNode.getPorts();
+						console.log("top port id : ", top.getID());
+						console.log("bottom port id : ", bottom.getID());
+						for(const link in top.links){								
+							const from  = top.links[link].getSourcePort().getParent();
+							const to = top.links[link].getTargetPort().getParent();
+							console.log("from options data : ", from.getOptions());
+							console.log("to options data : ", to.getOptions())
+						}
+
 					}
 				});
 			}}>
