@@ -1,59 +1,57 @@
-import * as SRD from '@projectstorm/react-diagrams';
 import { OneToOneNodeFactory, OneToOneNodeModel } from './nodes/OneToOne';
+import createEngine, { DiagramModel, DiagramEngine } from "@projectstorm/react-diagrams";
+import { ZoomCanvasAction } from './state/ZoomCanvasAction';
+import { DeleteItemsAction } from '@projectstorm/react-canvas-core';
+import { CloneItemsAction } from './state/CloneItemsAction';
 
 export class Application {
-	protected activeModel: SRD.DiagramModel;
-	protected diagramEngine: SRD.DiagramEngine;
+	protected diagramEngine: DiagramEngine;
+	protected updateFunction: Function;
 
-	constructor() {
-		this.diagramEngine = SRD.default();
+	constructor(updateFunction: Function) {
+		this.updateFunction = updateFunction;
+		this.diagramEngine = createEngine({ registerDefaultZoomCanvasAction: false, registerDefaultDeleteItemsAction: false });
 		this.newModel();
+		this.registerListener();
 	}
-	   
-	public getModel(){
+
+	public getModel() {
 		return this.diagramEngine.getModel();
 	}
 
 	public newModel() {
-		this.activeModel = new SRD.DiagramModel();
-		this.diagramEngine.setModel(this.activeModel);
-		const model = this.diagramEngine.getModel();
-
-		model.registerListener({
-			eventDidFire : () => {
-				// console.log("Event did fire");
-			},
-			linksUpdated : () => {
-				// console.log("Links upated");
-			},
-			nodesUpdated : () => {
-				// console.log("Nodes upated");
-			},
-			// gridUpdated: e => console.log("gridUpdated", e),
-			// offsetUpdated: e => console.log("offsetUpdated", e),
-			// entityRemoved: e => console.log("entityRemoved", e),
-			// selectionChanged: e => console.log("selectionChanged", e)
-		})
-
+		const model = new DiagramModel();
+		this.diagramEngine.setModel(model);
 
 		this.diagramEngine.getNodeFactories().registerFactory(new OneToOneNodeFactory());
 
+		const eventBus = this.diagramEngine.getActionEventBus();
+		eventBus.registerAction(new ZoomCanvasAction({ inverseZoom: true }));
+		eventBus.registerAction(new DeleteItemsAction({ keyCodes: [46], modifiers: { shiftKey: true } }));
+		eventBus.registerAction(new CloneItemsAction({ offset: { x: 50, y: 50 } }));
+
 		const node = new OneToOneNodeModel();
 		node.setPosition(250, 200);
+		model.addAll(node);
+	}
 
-		// link the ports
-		// let link1 = port.link(port2);
-
-		// this.activeModel.addAll(node1, node2, node3, link1);
-		this.activeModel.addAll(node);
+	public getActiveDiagram(): DiagramModel {
+		return this.diagramEngine.getModel();
 
 	}
 
-	public getActiveDiagram(): SRD.DiagramModel {
-		return this.activeModel;
-	}
-
-	public getDiagramEngine(): SRD.DiagramEngine {
+	public getDiagramEngine(): DiagramEngine {
 		return this.diagramEngine;
+	}
+
+	public registerListener(update?: boolean): void {
+		this.diagramEngine.getModel().registerListener({
+			nodesUpdated: () => {
+				this.updateFunction();
+			},
+		});
+		if (update) {
+			this.updateFunction();
+		}
 	}
 }

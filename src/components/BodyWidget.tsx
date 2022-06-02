@@ -9,6 +9,7 @@ import { OneToOneNodeModel } from '../nodes/OneToOne';
 import { Collapse } from 'antd';
 import { OneToOneOutlined } from '@ant-design/icons';
 import { CustomNodeIcon } from './CustomNodeIcon';
+import { Application } from '../Application';
 
 const { Panel } = Collapse;
 export interface BodyWidgetProps {
@@ -56,13 +57,16 @@ namespace S {
 		"cursor": "pointer",
 	};
 }
-export class BodyWidget extends React.Component<BodyWidgetProps> {
+export class BodyWidget extends React.Component {
+	state = {
+		app: new Application(() => {
+			this.forceUpdate();
+		}),
+	};
 
-	engine: DagreEngine;
+	autoDistribute = () => {
 
-	constructor(props : BodyWidgetProps) {
-		super(props);
-		this.engine = new DagreEngine({
+		new DagreEngine({
 			graph: {
 				rankdir: 'RL',
 				ranker: 'longest-path',
@@ -70,13 +74,9 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 				marginy: 25
 			},
 			includeLinks: true
-		});
-	}
-
-	autoDistribute = () => {
-		this.engine.redistribute(this.props.model);
+		}).redistribute(this.state.app.getModel());
 		this.reroute();
-		this.props.engine.repaintCanvas();
+		this.state.app.getDiagramEngine().repaintCanvas();
 	};
 
 	componentDidMount(): void {
@@ -86,7 +86,7 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 	}
 
 	reroute() {
-		this.props.engine
+		this.state.app.getDiagramEngine()
 			.getLinkFactories()
 			.getFactory<PathFindingLinkFactory>(PathFindingLinkFactory.NAME)
 			.calculateRoutingMatrix();
@@ -95,18 +95,18 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 	render() {
 		return (
 			<S.Body onMouseUp={() => {
-				const model = this.props.model;
+				const model = this.state.app.getModel();
 				const listLink = Object.values(model.getLinks());
 				listLink.forEach(link => {
 					if(!link.getTargetPort()){
 						model.removeLink(link);
 					}
 				});
-				this.props.model.getModels().forEach(model => {
+				this.state.app.getModel().getModels().forEach(model => {
 					if(!(model instanceof DefaultLinkModel)){
 						const modelId = model.getID();
 						console.log("model or the icon id : ", modelId);
-						const modelNode = this.props.model.getNode(modelId);
+						const modelNode = this.state.app.getModel().getNode(modelId);
 						const { top, bottom } = modelNode.getPorts();
 						console.log("top port id : ", top.getID());
 						console.log("bottom port id : ", bottom.getID());
@@ -136,7 +136,7 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 					<S.Layer
 						onDrop={(event) => {
 							const data = JSON.parse(event.dataTransfer.getData('storm-diagram-node'));
-							const nodesCount = _.keys(this.props.model.getNodes()).length;
+							const nodesCount = _.keys(this.state.app.getModel().getNodes()).length;
 
 							let node: DefaultNodeModel | OneToOneNodeModel | null = null;
 							if (data.type === 'in') {
@@ -152,15 +152,15 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 							}else{
 								node = new OneToOneNodeModel();
 							}
-							const point = this.props.engine.getRelativeMousePoint(event);
+							const point = this.state.app.getDiagramEngine().getRelativeMousePoint(event);
 							node.setPosition(point);
-							this.props.model.addNode(node);
+							this.state.app.getModel().addNode(node);
 							this.forceUpdate();
 						}}
 						onDragOver={(event) => {
 							event.preventDefault();
 						}}>
-						<CanvasDragToggle engine={this.props.engine} autoDistribute={this.autoDistribute} />
+						<CanvasDragToggle engine={this.state.app.getDiagramEngine()} autoDistribute={this.autoDistribute} />
 					</S.Layer>
 				</S.Content>
 			</S.Body>
