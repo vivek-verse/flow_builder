@@ -1,4 +1,4 @@
-import { OneToOneNodeFactory, OneToOneNodeModel } from './nodes/OneToOne';
+import { OneToOneNodeFactory } from './nodes/OneToOne';
 import createEngine, { DiagramModel, DiagramEngine } from "@projectstorm/react-diagrams";
 import { ZoomCanvasAction } from './state/ZoomCanvasAction';
 import { DeleteItemsAction } from '@projectstorm/react-canvas-core';
@@ -22,17 +22,11 @@ export class Application {
 	public newModel() {
 		const model = new DiagramModel();
 		this.diagramEngine.setModel(model);
-
 		this.diagramEngine.getNodeFactories().registerFactory(new OneToOneNodeFactory());
-
 		const eventBus = this.diagramEngine.getActionEventBus();
 		eventBus.registerAction(new ZoomCanvasAction({ inverseZoom: true }));
 		eventBus.registerAction(new DeleteItemsAction({ keyCodes: [46], modifiers: { shiftKey: true } }));
 		eventBus.registerAction(new CloneItemsAction({ offset: { x: 50, y: 50 } }));
-
-		const node = new OneToOneNodeModel();
-		node.setPosition(250, 200);
-		model.addAll(node);
 	}
 
 	public getActiveDiagram(): DiagramModel {

@@ -1,15 +1,15 @@
 import * as React from 'react';
-import * as _ from 'lodash';
 import { TrayWidget } from './TrayWidget';
-import { DagreEngine, DefaultNodeModel, PathFindingLinkFactory, DiagramEngine, DiagramModel, DefaultLinkModel } from '@projectstorm/react-diagrams';
+import { DagreEngine, PathFindingLinkFactory, DiagramEngine, DiagramModel } from '@projectstorm/react-diagrams';
 import styled from '@emotion/styled';
 import { CanvasDragToggle } from './CanvasDragToggle';
-import { OneToOneNodeModel } from '../nodes/OneToOne';
 
 import { Collapse } from 'antd';
 import { OneToOneOutlined } from '@ant-design/icons';
 import { CustomNodeIcon } from './CustomNodeIcon';
 import { Application } from '../Application';
+import { CustomNodeModel, CustomNodeModelGenerics, CustomNodeModelOptions } from '../nodes/Custom';
+import { AllNodeFactories, NodeFactories } from '.';
 
 const { Panel } = Collapse;
 export interface BodyWidgetProps {
@@ -65,15 +65,14 @@ export class BodyWidget extends React.Component {
 	};
 
 	autoDistribute = () => {
-
 		new DagreEngine({
 			graph: {
-				rankdir: 'RL',
+				rankdir: 'LR',
 				ranker: 'longest-path',
-				marginx: 25,
-				marginy: 25
+				marginx: 50,
+				marginy: 50
 			},
-			includeLinks: true
+			includeLinks: false,
 		}).redistribute(this.state.app.getModel());
 		this.reroute();
 		this.state.app.getDiagramEngine().repaintCanvas();
@@ -102,23 +101,6 @@ export class BodyWidget extends React.Component {
 						model.removeLink(link);
 					}
 				});
-				this.state.app.getModel().getModels().forEach(model => {
-					if(!(model instanceof DefaultLinkModel)){
-						const modelId = model.getID();
-						console.log("model or the icon id : ", modelId);
-						const modelNode = this.state.app.getModel().getNode(modelId);
-						const { top, bottom } = modelNode.getPorts();
-						console.log("top port id : ", top.getID());
-						console.log("bottom port id : ", bottom.getID());
-						for(const link in top.links){								
-							const from  = top.links[link].getSourcePort().getParent();
-							const to = top.links[link].getTargetPort().getParent();
-							console.log("from options data : ", from.getOptions());
-							console.log("to options data : ", to.getOptions())
-						}
-
-					}
-				});
 			}}>
 				<S.Header>
 					<div className="title">Flow Builder</div>
@@ -127,34 +109,32 @@ export class BodyWidget extends React.Component {
 					<TrayWidget>
 						<Collapse style= {S.CollapseStyle} defaultActiveKey={['1']} onChange={() => {}}>
 							<Panel header="Custom Nodes" key="1">
-								<CustomNodeIcon model={{type : 'OneToOne'}} name="OneToOne">
-									<OneToOneOutlined style={{ fontSize : "25px", display: "table-cell", verticalAlign: "middle", textAlign: "center"}}/>
-								</CustomNodeIcon>
+								{
+									NodeFactories.map((factory) => {
+										let options = factory.options;
+										return (
+											<CustomNodeIcon  key={options.id} model={{ id: options.id }} name={options.id}>
+													<OneToOneOutlined style={{ fontSize : "25px", display: "table-cell", verticalAlign: "middle", textAlign: "center"}}/>
+											</CustomNodeIcon>
+										);
+									})
+								}
 							</Panel>
 						</Collapse>
 					</TrayWidget>
 					<S.Layer
 						onDrop={(event) => {
-							const data = JSON.parse(event.dataTransfer.getData('storm-diagram-node'));
-							const nodesCount = _.keys(this.state.app.getModel().getNodes()).length;
-
-							let node: DefaultNodeModel | OneToOneNodeModel | null = null;
-							if (data.type === 'in') {
-								node = new DefaultNodeModel('Node ' + (nodesCount + 1), 'rgb(192,255,0)');
-								if(node instanceof DefaultNodeModel){
-									node.addInPort('In');
-								}
-							} else if(data.type === 'out') {
-								node = new DefaultNodeModel('Node ' + (nodesCount + 1), 'rgb(0,192,255)');
-								if(node instanceof DefaultNodeModel){
-									node.addOutPort('Out');
-								}
-							}else{
-								node = new OneToOneNodeModel();
-							}
-							const point = this.state.app.getDiagramEngine().getRelativeMousePoint(event);
+							let data = JSON.parse(event.dataTransfer.getData("storm-diagram-node"));
+							let node: CustomNodeModel<CustomNodeModelGenerics<CustomNodeModelOptions>> = null!;
+							const factory = AllNodeFactories.find((factory) => {
+								return factory.options.id === data.id
+							});
+							//@ts-ignore
+							node = factory.generateModel(undefined);
+							node.setupPorts();
+							let point = this.state.app.getDiagramEngine().getRelativeMousePoint(event);
 							node.setPosition(point);
-							this.state.app.getModel().addNode(node);
+							this.state.app.getDiagramEngine().getModel().addNode(node);
 							this.forceUpdate();
 						}}
 						onDragOver={(event) => {
