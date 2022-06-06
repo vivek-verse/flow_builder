@@ -6,7 +6,6 @@ export interface TrayItemWidgetProps {
 	color: string;
 	name: string;
 }
-
 namespace S {
 	export const Tray = styled.div<{ color: string }>`
 		color: white;

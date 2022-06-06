@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { TrayWidget } from './TrayWidget';
-import { DagreEngine, PathFindingLinkFactory, DiagramEngine, DiagramModel } from '@projectstorm/react-diagrams';
+import { DagreEngine, PathFindingLinkFactory, DiagramEngine, DiagramModel, DefaultLinkModel } from '@projectstorm/react-diagrams';
 import styled from '@emotion/styled';
 import { CanvasDragToggle } from './CanvasDragToggle';
 
@@ -101,13 +101,38 @@ export class BodyWidget extends React.Component {
 						model.removeLink(link);
 					}
 				});
+
+				this.state.app.getModel().getModels().forEach(model => {
+					if(!(model instanceof DefaultLinkModel)){
+						const modelId = model.getID();
+						console.log("model or the icon id : ", modelId);
+						const modelNode = this.state.app.getModel().getNode(modelId);
+
+						let inPort;
+						let outPort;
+
+						for(let key in modelNode.getPorts()){
+							if(key.includes("in")){
+								inPort = modelNode.getPorts()[key];
+							}
+							if(key.includes("out")){
+								outPort = modelNode.getPorts()[key];
+							}	
+						}
+
+						console.log("In Port is : ", inPort);
+						console.log("Out Port is : ", outPort);
+
+					}
+				});
+
 			}}>
 				<S.Header>
 					<div className="title">Flow Builder</div>
 				</S.Header>
 				<S.Content>
 					<TrayWidget>
-						<Collapse style= {S.CollapseStyle} defaultActiveKey={['1']} onChange={() => {}}>
+						<Collapse style= {S.CollapseStyle} defaultActiveKey={['1']}>
 							<Panel header="Custom Nodes" key="1">
 								{
 									NodeFactories.map((factory) => {
