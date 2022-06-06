@@ -1,6 +1,7 @@
 import * as _ from "lodash";
 import { Action, ActionEvent, BaseModel, InputType } from "@projectstorm/react-canvas-core";
 import { DiagramEngine, NodeModel } from "@projectstorm/react-diagrams";
+import { StartNodeModel } from "../nodes/Start";
 
 export interface CloneItemsActionOptions {
 	keyCodes?: number[];
@@ -45,7 +46,7 @@ export class CloneItemsAction extends Action<DiagramEngine> {
 						}
 						item.setSelected(false);
 						
-						if (newItem instanceof NodeModel) {
+						if (!(newItem instanceof StartNodeModel) && newItem instanceof NodeModel) {
 							newItem.setPosition(newItem.getX() + offset.x, newItem.getY() + offset.y);
 							model.addNode(newItem);
 						}

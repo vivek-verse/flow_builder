@@ -2,8 +2,8 @@ import { OneToOneNodeFactory } from './nodes/OneToOne';
 import { StartNodeFactory, StartNodeModel } from './nodes/Start';
 import createEngine, { DiagramModel, DiagramEngine } from "@projectstorm/react-diagrams";
 import { ZoomCanvasAction } from './state/ZoomCanvasAction';
-import { DeleteItemsAction } from '@projectstorm/react-canvas-core';
 import { CloneItemsAction } from './state/CloneItemsAction';
+import { DeleteItemsActionCustom } from "./state/DeleteItemsActionCustom";
 
 export class Application {
 	protected diagramEngine: DiagramEngine;
@@ -27,7 +27,7 @@ export class Application {
 		this.diagramEngine.getNodeFactories().registerFactory(new OneToOneNodeFactory());
 		const eventBus = this.diagramEngine.getActionEventBus();
 		eventBus.registerAction(new ZoomCanvasAction({ inverseZoom: true }));
-		eventBus.registerAction(new DeleteItemsAction({ keyCodes: [46], modifiers: { shiftKey: true } }));
+		eventBus.registerAction(new DeleteItemsActionCustom({ keyCodes: [46], modifiers: { shiftKey: true } }));
 		eventBus.registerAction(new CloneItemsAction({ offset: { x: 50, y: 50 } }));
 		const start = new StartNodeModel();
 		start.setPosition(250, 200);
