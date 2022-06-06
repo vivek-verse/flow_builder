@@ -4,7 +4,7 @@ import { OneToOneNodeModel } from './OneToOneNodeModel';
 import { OneToOneNodeWidget } from './OneToOneNodeWidget';
 export class OneToOneNodeFactory extends CustomNodeFactory<OneToOneNodeModel>{
 	constructor() {
-		super("onetoone", "OneToOne", "#19e0e7");
+		super("OneToOne", "OneToOne", "#19e0e7");
 	}
 
   generateReactWidget(event : GenerateWidgetEvent<OneToOneNodeModel>): JSX.Element {

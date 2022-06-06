@@ -4,7 +4,7 @@ import { StartNodeModel } from './StartNodeModel';
 import { StartNodeWidget } from './StartNodeWidget';
 export class StartNodeFactory extends CustomNodeFactory<StartNodeModel>{
 	constructor() {
-		super("start", "Start", "#19e0e7");
+		super("Start", "Start", "#19e0e7");
 	}
 
   generateReactWidget(event : GenerateWidgetEvent<StartNodeModel>): JSX.Element {

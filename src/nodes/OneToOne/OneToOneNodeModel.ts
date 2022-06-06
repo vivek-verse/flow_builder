@@ -19,7 +19,7 @@ export class OneToOneNodeModel extends CustomNodeModel<OneToOneNodeModelGenerics
 			};
 		}
 		super({
-			type: "onetoone",
+			type: "OneToOne",
 			title: "OneToOne",
 			text: "",
 			inputs: 1,

@@ -3,13 +3,11 @@ import { TrayWidget } from './TrayWidget';
 import { DagreEngine, PathFindingLinkFactory, DiagramEngine, DiagramModel, DefaultLinkModel } from '@projectstorm/react-diagrams';
 import styled from '@emotion/styled';
 import { CanvasDragToggle } from './CanvasDragToggle';
-
-import { Collapse } from 'antd';
-import { OneToOneOutlined } from '@ant-design/icons';
+import { Collapse, Row, Col } from 'antd';
 import { CustomNodeIcon } from './CustomNodeIcon';
 import { Application } from '../Application';
 import { CustomNodeModel, CustomNodeModelGenerics, CustomNodeModelOptions } from '../nodes/Custom';
-import { AllNodeFactories, NodeFactories } from '.';
+import { AllNodeFactories, NodeFactories, UINodes } from '.';
 
 const { Panel } = Collapse;
 export interface BodyWidgetProps {
@@ -134,16 +132,21 @@ export class BodyWidget extends React.Component {
 					<TrayWidget>
 						<Collapse style= {S.CollapseStyle} defaultActiveKey={['1']}>
 							<Panel header="Custom Nodes" key="1">
-								{
-									NodeFactories.map((factory) => {
-										let options = factory.options;
-										return (
-											<CustomNodeIcon  key={options.id} model={{ id: options.id }} name={options.id}>
-													<OneToOneOutlined style={{ fontSize : "25px", display: "table-cell", verticalAlign: "middle", textAlign: "center"}}/>
-											</CustomNodeIcon>
-										);
-									})
-								}
+								<Row gutter={[16, 16]}>
+									{
+										NodeFactories.map((factory, i) => {
+											let options = factory.options;
+											const Tag = UINodes[i];
+											return (
+												<Col key={i} span={8}>
+													<CustomNodeIcon  key={options.id} model={{ id: options.id }} name={options.id}>
+															<Tag style={{ fontSize : "25px", display: "table-cell", verticalAlign: "middle", textAlign: "center"}}/>
+													</CustomNodeIcon>
+												</Col>
+											);
+										})
+									}
+								</Row>
 							</Panel>
 						</Collapse>
 					</TrayWidget>

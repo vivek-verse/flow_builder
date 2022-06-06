@@ -9,7 +9,7 @@ export interface CustomNodeIconProps {
 export class CustomNodeIcon extends React.Component<CustomNodeIconProps> {
 	render() {
 		return (
-			<Tooltip placement="top" title="OneToOne">
+			<Tooltip placement="top" title={this.props.name}>
 						<div style={{padding: "5px", backgroundColor : "#00C0FF", borderRadius : "5px", width : "30px", height : "30px", textAlign: "center", display:"table"}}>
 							{
 								React.cloneElement(this.props.children, { 
