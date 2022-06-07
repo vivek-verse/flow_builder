@@ -12,6 +12,7 @@ export class Application {
 	constructor(updateFunction: Function) {
 		this.updateFunction = updateFunction;
 		this.diagramEngine = createEngine({ registerDefaultZoomCanvasAction: false, registerDefaultDeleteItemsAction: false });
+		this.diagramEngine.maxNumberPointsPerLink = 0;
 		this.newModel();
 		this.registerListener();
 	}
