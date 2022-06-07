@@ -10,6 +10,8 @@ export interface CustomNodeModelOptions extends BasePositionModelOptions {
 	color?: string;
 	inputs?: number;
 	outputs?: number;
+	func?: string,
+    dataType?: string,
 }
 
 export interface CustomNodeModelGenerics<T extends CustomNodeModelOptions> extends NodeModelGenerics {
@@ -80,7 +82,7 @@ export class CustomNodeModel<T extends CustomNodeModelGenerics<CustomNodeModelOp
 	}
 
 	addInPort(label: string, index?: number): DefaultPortModel {
-		let id = `in-${new Date().getTime()} ${index || ""}`;
+		let id = 'in';
 		const p = new DefaultPortModel({
 			in: true,
 			name: id,
@@ -92,7 +94,7 @@ export class CustomNodeModel<T extends CustomNodeModelGenerics<CustomNodeModelOp
 	}
 
 	addOutPort(label: string, index?: number): DefaultPortModel {
-		let id = `out-${new Date().getTime()}${index || ""}`;
+		let id = 'out';
 		const p = new DefaultPortModel({
 			in: false,
 			name: id,

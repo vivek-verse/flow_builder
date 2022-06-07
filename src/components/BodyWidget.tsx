@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { TrayWidget } from './TrayWidget';
-import { DagreEngine, PathFindingLinkFactory, DiagramEngine, DiagramModel, DefaultLinkModel } from '@projectstorm/react-diagrams';
+import { DagreEngine, PathFindingLinkFactory, DiagramEngine, DiagramModel } from '@projectstorm/react-diagrams';
+import { PortModel, PortModelGenerics } from '@projectstorm/react-diagrams-core';
+
 import styled from '@emotion/styled';
 import { CanvasDragToggle } from './CanvasDragToggle';
 import { Collapse, Row, Col } from 'antd';
@@ -10,6 +12,10 @@ import { CustomNodeModel, CustomNodeModelGenerics, CustomNodeModelOptions } from
 import { AllNodeFactories, NodeFactories, UINodes } from '.';
 
 const { Panel } = Collapse;
+
+interface BasicObject {
+  [k: string]: any;
+}
 export interface BodyWidgetProps {
 	engine : DiagramEngine;
 	model : DiagramModel;
@@ -89,6 +95,48 @@ export class BodyWidget extends React.Component {
 			.calculateRoutingMatrix();
 	}
 
+	getNextNodeValue(node : PortModel<PortModelGenerics>){
+		let value = '';
+		const connectionLink = Object.values(node.links)[0];
+		if(connectionLink){
+			const nextPort = connectionLink.getTargetPort();
+			const nextNode = nextPort.getParent();
+			const { title } : CustomNodeModelOptions = nextNode.getOptions();
+			value = title as string;
+		}
+		return value;
+	}
+
+	nodesToJson(currentNode : PortModel<PortModelGenerics>) {
+ 		const finalObj: BasicObject = {};
+		let node = currentNode;
+		const helper = (finalObj: BasicObject, node: PortModel<PortModelGenerics>) => {
+			const connectionLinks = Object.values(node.links);
+			for (const conn of connectionLinks){
+				const targetPort = conn.getTargetPort();
+				if(targetPort){
+					const connectedNode = targetPort.getParent();
+					const data = connectedNode.getOptions();
+					const { dataType, func } : CustomNodeModelOptions = data;
+					const { out } = connectedNode.getPorts();
+					if(dataType === "string"){
+						finalObj[func as string] = this.getNextNodeValue(out);
+					}else if(dataType === "object"){
+						finalObj[func as string] = {};
+						helper(finalObj[func as string], out)
+					}else if(dataType === "array"){
+						finalObj[func as string] = [];
+						helper(finalObj[func as string], out)
+					}
+				}
+			}
+		}
+
+		helper(finalObj, node);
+
+		console.log("finalObj ", finalObj);
+	}
+
 	render() {
 		return (
 			<S.Body onMouseUp={() => {
@@ -99,31 +147,8 @@ export class BodyWidget extends React.Component {
 						model.removeLink(link);
 					}
 				});
-
-				this.state.app.getModel().getModels().forEach(model => {
-					if(!(model instanceof DefaultLinkModel)){
-						const modelId = model.getID();
-						console.log("model or the icon id : ", modelId);
-						const modelNode = this.state.app.getModel().getNode(modelId);
-
-						let inPort;
-						let outPort;
-
-						for(let key in modelNode.getPorts()){
-							if(key.includes("in")){
-								inPort = modelNode.getPorts()[key];
-							}
-							if(key.includes("out")){
-								outPort = modelNode.getPorts()[key];
-							}	
-						}
-
-						console.log("In Port is : ", inPort);
-						console.log("Out Port is : ", outPort);
-
-					}
-				});
-
+				let {out : node} = this.state.app.getModel().getNode('start').getPorts();
+				this.nodesToJson(node);
 			}}>
 				<S.Header>
 					<div className="title">Flow Builder</div>

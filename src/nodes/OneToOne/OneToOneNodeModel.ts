@@ -23,7 +23,7 @@ export class OneToOneNodeModel extends CustomNodeModel<OneToOneNodeModelGenerics
 			title: "OneToOne",
 			text: "",
 			inputs: 1,
-			outputs: 1,
+			outputs: 0,
 			...options,
 		});
 	}

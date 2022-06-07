@@ -2,15 +2,15 @@ import { DefaultPortModel } from "@projectstorm/react-diagrams";
 import { DeserializeEvent } from "@projectstorm/react-canvas-core";
 import { CustomNodeModel, CustomNodeModelGenerics, CustomNodeModelOptions } from "../Custom";
 
-export interface StartNodeModelOptions extends CustomNodeModelOptions {
+export interface DeriveNodeModelOptions extends CustomNodeModelOptions {
 	text?: string;
 }
 
-export interface StartNodeModelGenerics extends CustomNodeModelGenerics<StartNodeModelOptions> {}
+export interface DeriveNodeModelGenerics extends CustomNodeModelGenerics<DeriveNodeModelOptions> {}
 
-export class StartNodeModel extends CustomNodeModel<StartNodeModelGenerics> {
+export class DeriveNodeModel extends CustomNodeModel<DeriveNodeModelGenerics> {
 	constructor(name: string, text: string);
-	constructor(options?: StartNodeModelOptions);
+	constructor(options?: DeriveNodeModelOptions);
 	constructor(options: any = {}, text?: string) {
 		if (typeof options === "string") {
 			options = {
@@ -19,12 +19,13 @@ export class StartNodeModel extends CustomNodeModel<StartNodeModelGenerics> {
 			};
 		}
 		super({
-			type: "Start",
-			title: "Start",
+			type: "Derive",
+			title: "Derive",
 			text: "",
-			inputs: 0,
+			inputs: 1,
 			outputs: 1,
-			id : "start",
+			dataType: "object",
+			func: "derive",
 			...options,
 		});
 	}

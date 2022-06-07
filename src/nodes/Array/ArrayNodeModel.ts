@@ -24,6 +24,8 @@ export class ArrayNodeModel extends CustomNodeModel<ArrayNodeModelGenerics> {
 			text: "",
 			inputs: 1,
 			outputs: 1,
+			dataType: "push",
+			func: "push",
 			...options,
 		});
 	}
