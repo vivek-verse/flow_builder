@@ -2,7 +2,6 @@ import * as React from 'react';
 import { TrayWidget } from './TrayWidget';
 import { DagreEngine, PathFindingLinkFactory, DiagramEngine, DiagramModel } from '@projectstorm/react-diagrams';
 import { PortModel, PortModelGenerics } from '@projectstorm/react-diagrams-core';
-
 import styled from '@emotion/styled';
 import { CanvasDragToggle } from './CanvasDragToggle';
 import { Collapse, Row, Col } from 'antd';
@@ -95,6 +94,25 @@ export class BodyWidget extends React.Component {
 			.calculateRoutingMatrix();
 	}
 
+	saveFile = async () => {
+
+		console.log("came in saveFile");
+
+		let { out : node } = this.state.app.getModel().getNode('start').getPorts();
+		const exportData = this.nodesToJson(node);
+
+		let fileHandle: FileSystemFileHandle;
+		try {
+			fileHandle = await showSaveFilePicker({ types: [{ accept: { "json/*": [".json"] } }] });
+		} catch (error) {
+			return;
+		}
+		fileHandle.createWritable().then((stream) => {
+			stream.write(JSON.stringify(exportData, null, 2));
+			stream.close();
+		});
+	}
+
 	getNextNodeValue(node : PortModel<PortModelGenerics>){
 		let value = '';
 		const connectionLink = Object.values(node.links)[0];
@@ -166,11 +184,6 @@ export class BodyWidget extends React.Component {
 						model.removeLink(link);
 					}
 				});
-				let { out : node } = this.state.app.getModel().getNode('start').getPorts();
-				const exportData = this.nodesToJson(node);
-
-				console.log("exportData is : ", exportData);
-
 			}}>
 				<S.Header>
 					<div className="title">Flow Builder</div>
@@ -185,7 +198,7 @@ export class BodyWidget extends React.Component {
 											let options = factory.options;
 											const Tag = UINodes[i];
 											return (
-												<Col key={i} span={8}>
+												<Col key={i} span={4}>
 													<CustomNodeIcon  key={options.id} model={{ id: options.id }} name={options.id}>
 															<Tag style={{ fontSize : "25px", display: "table-cell", verticalAlign: "middle", textAlign: "center"}}/>
 													</CustomNodeIcon>
@@ -215,7 +228,7 @@ export class BodyWidget extends React.Component {
 						onDragOver={(event) => {
 							event.preventDefault();
 						}}>
-						<CanvasDragToggle engine={this.state.app.getDiagramEngine()} autoDistribute={this.autoDistribute} />
+						<CanvasDragToggle engine={this.state.app.getDiagramEngine()} autoDistribute={this.autoDistribute} saveFile={this.saveFile} />
 					</S.Layer>
 				</S.Content>
 			</S.Body>
