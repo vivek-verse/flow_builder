@@ -24,6 +24,7 @@ export class OneToOneNodeModel extends CustomNodeModel<OneToOneNodeModelGenerics
 			text: "",
 			inputs: 1,
 			outputs: 0,
+			dataType: "value",
 			...options,
 		});
 	}

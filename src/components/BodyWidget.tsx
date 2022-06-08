@@ -117,24 +117,43 @@ export class BodyWidget extends React.Component {
 				if(targetPort){
 					const connectedNode = targetPort.getParent();
 					const data = connectedNode.getOptions();
-					const { dataType, func } : CustomNodeModelOptions = data;
+					const { dataType, func, title } : CustomNodeModelOptions = data;
 					const { out } = connectedNode.getPorts();
 					if(dataType === "string"){
-						finalObj[func as string] = this.getNextNodeValue(out);
+						const nodeValue = this.getNextNodeValue(out);
+						if(Array.isArray(finalObj)){
+							finalObj.push({[func as string] : nodeValue});
+						}else{
+							finalObj[func as string] = nodeValue;
+
+						}
 					}else if(dataType === "object"){
-						finalObj[func as string] = {};
-						helper(finalObj[func as string], out)
+						if(Array.isArray(finalObj)){
+							finalObj.push({[func as string] : {}});
+							helper(finalObj[finalObj.length - 1][func as string], out)
+						}else{
+							finalObj[func as string] = {};
+							helper(finalObj[func as string], out);
+						}
 					}else if(dataType === "array"){
-						finalObj[func as string] = [];
-						helper(finalObj[func as string], out)
+						if(Array.isArray(finalObj) && func === 'push'){
+							finalObj.push([]);
+							helper(finalObj[finalObj.length - 1], out);
+						}else{
+							finalObj[func as string] = [];
+							helper(finalObj[func as string], out);
+						}						
+					}else if(dataType === "value"){
+						if(Array.isArray(finalObj)){
+							finalObj.push(title);
+						}
 					}
 				}
 			}
 		}
 
 		helper(finalObj, node);
-
-		console.log("finalObj ", finalObj);
+		return finalObj;
 	}
 
 	render() {
@@ -147,8 +166,11 @@ export class BodyWidget extends React.Component {
 						model.removeLink(link);
 					}
 				});
-				let {out : node} = this.state.app.getModel().getNode('start').getPorts();
-				this.nodesToJson(node);
+				let { out : node } = this.state.app.getModel().getNode('start').getPorts();
+				const exportData = this.nodesToJson(node);
+
+				console.log("exportData is : ", exportData);
+
 			}}>
 				<S.Header>
 					<div className="title">Flow Builder</div>
