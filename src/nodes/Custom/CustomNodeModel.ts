@@ -52,7 +52,7 @@ export class CustomNodeModel<T extends CustomNodeModelGenerics<CustomNodeModelOp
 		});
 	}
 
-	doClone(lookupTable: {}, clone: any): void {
+	doClone(lookupTable: any, clone: any): void {
 		clone.portsIn = [];
 		clone.portsOut = [];
 		super.doClone(lookupTable, clone);

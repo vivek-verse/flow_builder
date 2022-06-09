@@ -21,7 +21,7 @@ export class Application {
 		return this.diagramEngine.getModel();
 	}
 
-	public newModel() {
+	public newModel() {    
 		const model = new DiagramModel();
 		this.diagramEngine.setModel(model);
 		this.diagramEngine.getNodeFactories().registerFactory(new StartNodeFactory());
@@ -38,7 +38,6 @@ export class Application {
 
 	public getActiveDiagram(): DiagramModel {
 		return this.diagramEngine.getModel();
-
 	}
 
 	public getDiagramEngine(): DiagramEngine {

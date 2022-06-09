@@ -29,7 +29,7 @@ export class StartNodeModel extends CustomNodeModel<StartNodeModelGenerics> {
 		});
 	}
 
-	doClone(lookupTable: {}, clone: any): void {
+	doClone(lookupTable: any, clone: any): void {
 		super.doClone(lookupTable, clone);
 	}
 

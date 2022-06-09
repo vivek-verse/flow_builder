@@ -1,17 +1,17 @@
 import * as React from 'react';
 import { TrayWidget } from './TrayWidget';
 import { DagreEngine, PathFindingLinkFactory, DiagramEngine, DiagramModel } from '@projectstorm/react-diagrams';
-import { PortModel, PortModelGenerics } from '@projectstorm/react-diagrams-core';
+import { LinkModel, LinkModelGenerics, PortModel, PortModelGenerics } from '@projectstorm/react-diagrams-core';
 import styled from '@emotion/styled';
 import { CanvasDragToggle } from './CanvasDragToggle';
 import { Collapse, Row, Col, Modal, Button } from 'antd';
 import { CustomNodeIcon } from './CustomNodeIcon';
 import { Application } from '../Application';
-import { showSaveFilePicker } from "file-system-access";
+import { showSaveFilePicker, showOpenFilePicker } from "file-system-access";
 import { CustomNodeModel, CustomNodeModelGenerics, CustomNodeModelOptions } from '../nodes/Custom';
 import { AllNodeFactories, NodeFactories, UINodes } from '.';
 import { StartNodeModel } from '../nodes/Start';
-
+import Nodes from '../types/Nodes';
 const { Panel } = Collapse;
 
 interface BasicObject {
@@ -160,27 +160,70 @@ export class BodyWidget extends React.Component {
 		app.registerListener(true);
 	};
 
-	loadFile(){
-		const finalObj : BasicObject = {
-			"rules": [
-				{
-				"derive": {
-					"ruleName": "OneToOne"
-				}
-				}
-			],
-			"derive": {
-				"ruleName": "OneToOne"
-			}
+	async loadFile(app : Application){		
+		let fileHandle: FileSystemFileHandle[];
+		try {
+			fileHandle = await showOpenFilePicker({
+				multiple: false,
+				types: [{ accept: { "json/*": [".json"] } }],
+			});
+		} catch (error) {
+			return;
 		}
-		
-		const helper = (obj: BasicObject) => {
+
+		fileHandle[0].getFile().then((file) => {
+			file.text().then((data) => {
+				this.loadData(app, JSON.parse(data));
+			});
+		});
+	}
+
+	loadData(app : Application, finalObj : BasicObject){
+		const all : CustomNodeModel<CustomNodeModelGenerics<CustomNodeModelOptions>> | LinkModel<LinkModelGenerics>[] = [];
+
+		const helper = (obj: BasicObject, prev : CustomNodeModel<CustomNodeModelGenerics<CustomNodeModelOptions>>) => {
+			const outPort = prev.getOutPorts()[0];
 			for(const key in obj){
-				console.log("key is : ", key);
+				const Model = (Nodes as BasicObject)[key];
+				const node = new Model();
+				node.setPosition(250, 200);
+				node.setupPorts();
+				const inPort = node.getInPorts()[0];
+				const link = outPort.link(inPort);
+				all.push(link);
+				if(Array.isArray(obj[key])){
+					for(const o of  obj[key]){
+						helper(o, node);
+					}
+				}else if(typeof obj[key]  === 'object' && !Array.isArray(obj[key])){
+					helper(obj[key], node);
+				}else if(typeof obj[key] === 'string'){
+					all.push(node);
+					const oPort = node.getOutPorts()[0];
+					const ValueModal = (Nodes as BasicObject)[obj[key]]
+					const valueNode = new ValueModal();
+					valueNode.setPosition(250, 200);
+					valueNode.setupPorts();
+					const iPort = valueNode.getInPorts()[0];
+					const l = oPort.link(iPort);
+					all.push(valueNode);
+					all.push(l);
+				}
+				all.push(prev as any);
 			}
 		}
 
-		helper(finalObj);
+		const start = new StartNodeModel();
+		start.setPosition(250, 200);
+		start.setupPorts();
+
+		helper(finalObj, start);
+		const model = app.getModel();
+		model.addAll(...all);
+
+		setTimeout(() => {
+			this.autoDistribute();
+		}, 0);
 	}
 
 	nodesToJson(currentNode : PortModel<PortModelGenerics>) {
@@ -286,7 +329,7 @@ export class BodyWidget extends React.Component {
 						onDragOver={(event) => {
 							event.preventDefault();
 						}}>
-						<CanvasDragToggle engine={this.state.app.getDiagramEngine()} autoDistribute={this.autoDistribute} saveFile={this.saveFile} showModal={this.showModal} loadFile={this.loadFile} clear={ () => {this.clear(this.state.app)}}/>
+						<CanvasDragToggle engine={this.state.app.getDiagramEngine()} autoDistribute={this.autoDistribute} saveFile={this.saveFile} showModal={this.showModal} loadFile={() => {this.loadFile(this.state.app)}} clear={ () => {this.clear(this.state.app)}}/>
 						<Modal
 							title="Config Content"
 							visible={this.state.visible}
