@@ -10,6 +10,7 @@ import { Application } from '../Application';
 import { showSaveFilePicker } from "file-system-access";
 import { CustomNodeModel, CustomNodeModelGenerics, CustomNodeModelOptions } from '../nodes/Custom';
 import { AllNodeFactories, NodeFactories, UINodes } from '.';
+import { StartNodeModel } from '../nodes/Start';
 
 const { Panel } = Collapse;
 
@@ -149,6 +150,39 @@ export class BodyWidget extends React.Component {
 		return value;
 	}
 
+	clear(app : Application) {
+		let model = new DiagramModel();
+		app.getDiagramEngine().setModel(model);
+		const start = new StartNodeModel();
+		start.setPosition(50, 50);
+		start.setupPorts();
+		model.addAll(start);
+		app.registerListener(true);
+	};
+
+	loadFile(){
+		const finalObj : BasicObject = {
+			"rules": [
+				{
+				"derive": {
+					"ruleName": "OneToOne"
+				}
+				}
+			],
+			"derive": {
+				"ruleName": "OneToOne"
+			}
+		}
+		
+		const helper = (obj: BasicObject) => {
+			for(const key in obj){
+				console.log("key is : ", key);
+			}
+		}
+
+		helper(finalObj);
+	}
+
 	nodesToJson(currentNode : PortModel<PortModelGenerics>) {
  		const finalObj: BasicObject = {};
 		let node = currentNode;
@@ -252,7 +286,7 @@ export class BodyWidget extends React.Component {
 						onDragOver={(event) => {
 							event.preventDefault();
 						}}>
-						<CanvasDragToggle engine={this.state.app.getDiagramEngine()} autoDistribute={this.autoDistribute} saveFile={this.saveFile} showModal={this.showModal}/>
+						<CanvasDragToggle engine={this.state.app.getDiagramEngine()} autoDistribute={this.autoDistribute} saveFile={this.saveFile} showModal={this.showModal} loadFile={this.loadFile} clear={ () => {this.clear(this.state.app)}}/>
 						<Modal
 							title="Config Content"
 							visible={this.state.visible}
