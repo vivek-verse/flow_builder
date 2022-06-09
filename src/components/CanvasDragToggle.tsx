@@ -3,9 +3,6 @@ import { HelperButton, HelperWorkspaceWidget } from '../helpers/HelperWorkspaceW
 import { CanvasWidget } from '@projectstorm/react-canvas-core';
 import { HelperCanvasWidget } from '../helpers/HelperCanvasWidget';
 
-/**
- * Tests the drag on/off
- */
 export class CanvasDragToggle extends React.Component<any, any> {
 	enableDrag = () => {
 		const { engine } = this.props;
@@ -31,7 +28,8 @@ export class CanvasDragToggle extends React.Component<any, any> {
 						Disable canvas drag
 					</HelperButton>,
 					<HelperButton key={3} onClick={this.props.autoDistribute}>Re-distribute</HelperButton>,
-					<HelperButton key={4} onClick={this.props.saveFile}>Save</HelperButton>
+					<HelperButton key={4} onClick={this.props.saveFile}>Save</HelperButton>,
+					<HelperButton key={5} onClick={this.props.showModal}>Show Config</HelperButton>
 				]}>
 				<HelperCanvasWidget>
 					<CanvasWidget engine={engine} />

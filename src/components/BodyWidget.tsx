@@ -4,9 +4,10 @@ import { DagreEngine, PathFindingLinkFactory, DiagramEngine, DiagramModel } from
 import { PortModel, PortModelGenerics } from '@projectstorm/react-diagrams-core';
 import styled from '@emotion/styled';
 import { CanvasDragToggle } from './CanvasDragToggle';
-import { Collapse, Row, Col } from 'antd';
+import { Collapse, Row, Col, Modal, Button } from 'antd';
 import { CustomNodeIcon } from './CustomNodeIcon';
 import { Application } from '../Application';
+import { showSaveFilePicker } from "file-system-access";
 import { CustomNodeModel, CustomNodeModelGenerics, CustomNodeModelOptions } from '../nodes/Custom';
 import { AllNodeFactories, NodeFactories, UINodes } from '.';
 
@@ -61,10 +62,35 @@ namespace S {
 	};
 }
 export class BodyWidget extends React.Component {
+
 	state = {
 		app: new Application(() => {
 			this.forceUpdate();
 		}),
+		visible : false
+	};
+
+	showModal = () => {
+		this.setState({
+			visible: true,
+		})
+	};
+
+	handleOk = () => {
+		this.setState({
+			visible: false,
+		})
+	};
+
+	handleCancel = () => {
+		this.setState({
+			visible: false,
+		})  
+	};
+
+	copyContent = () => {
+		const content = document.getElementById('json-content') as HTMLElement;
+		navigator.clipboard.writeText(content.innerHTML);
 	};
 
 	autoDistribute = () => {
@@ -95,8 +121,6 @@ export class BodyWidget extends React.Component {
 	}
 
 	saveFile = async () => {
-
-		console.log("came in saveFile");
 
 		let { out : node } = this.state.app.getModel().getNode('start').getPorts();
 		const exportData = this.nodesToJson(node);
@@ -228,7 +252,29 @@ export class BodyWidget extends React.Component {
 						onDragOver={(event) => {
 							event.preventDefault();
 						}}>
-						<CanvasDragToggle engine={this.state.app.getDiagramEngine()} autoDistribute={this.autoDistribute} saveFile={this.saveFile} />
+						<CanvasDragToggle engine={this.state.app.getDiagramEngine()} autoDistribute={this.autoDistribute} saveFile={this.saveFile} showModal={this.showModal}/>
+						<Modal
+							title="Config Content"
+							visible={this.state.visible}
+							onOk={this.handleOk}
+							onCancel={this.handleCancel}
+							footer = {
+								[
+									<Button key="back" onClick={this.copyContent}>
+ 						           		Copy
+          							</Button>,
+          							<Button key="submit" type="primary" onClick={this.handleOk}>
+            							Ok
+          							</Button>,
+								]
+							}
+						>
+							<pre id="json-content">
+								{
+									JSON.stringify(this.nodesToJson(this.state.app.getModel().getNode('start').getPorts().out), null, 2)
+								}
+							</pre>
+						</Modal>
 					</S.Layer>
 				</S.Content>
 			</S.Body>
