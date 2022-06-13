@@ -62,8 +62,8 @@ namespace S {
 		"cursor": "pointer",
 	};
 }
-export class BodyWidget extends React.Component {
 
+export class BodyWidget extends React.Component {
 	state = {
 		app: new Application(() => {
 			this.forceUpdate();

@@ -2,15 +2,15 @@ import { DefaultPortModel } from "@projectstorm/react-diagrams";
 import { DeserializeEvent } from "@projectstorm/react-canvas-core";
 import { CustomNodeModel, CustomNodeModelGenerics, CustomNodeModelOptions } from "../Custom";
 
-export interface OneToOneNodeModelOptions extends CustomNodeModelOptions {
+export interface RuleNameValueNodeModelOptions extends CustomNodeModelOptions {
 	text?: string;
 }
 
-export interface OneToOneNodeModelGenerics extends CustomNodeModelGenerics<OneToOneNodeModelOptions> {}
+export interface RuleNameValueNodeModelGenerics extends CustomNodeModelGenerics<RuleNameValueNodeModelOptions> {}
 
-export class OneToOneNodeModel extends CustomNodeModel<OneToOneNodeModelGenerics> {
+export class RuleNameValueNodeModel extends CustomNodeModel<RuleNameValueNodeModelGenerics> {
 	constructor(name: string, text: string);
-	constructor(options?: OneToOneNodeModelOptions);
+	constructor(options?: RuleNameValueNodeModelOptions);
 	constructor(options: any = {}, text?: string) {
 		if (typeof options === "string") {
 			options = {
@@ -19,8 +19,8 @@ export class OneToOneNodeModel extends CustomNodeModel<OneToOneNodeModelGenerics
 			};
 		}
 		super({
-			type: "OneToOne",
-			title: "OneToOne",
+			type: "RuleNameValue",
+			title: "RuleNameValue",
 			text: "",
 			inputs: 1,
 			outputs: 0,
@@ -36,6 +36,10 @@ export class OneToOneNodeModel extends CustomNodeModel<OneToOneNodeModelGenerics
 	deserialize(event: DeserializeEvent<this>) {
 		super.deserialize(event);
 		this.options.text = event.data.text;
+	}
+
+	updateOptions(o : any){
+		this.options = { ...this.options, ...o};
 	}
 
 	serialize(): any {

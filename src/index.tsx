@@ -1,13 +1,20 @@
+import React from "react";
 import reportWebVitals from './reportWebVitals';
 import "./index.css";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import { BodyWidget } from './components/BodyWidget';
+import { DiagramContextProvider } from "./components/DiagramContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
 root.render(
-	<BodyWidget/>
-);
+		<DiagramContextProvider>
+		<React.StrictMode>
+			<BodyWidget/>
+		</React.StrictMode>
+		</DiagramContextProvider>
+
+);   
 
 reportWebVitals();
 

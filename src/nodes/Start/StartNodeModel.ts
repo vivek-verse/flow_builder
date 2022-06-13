@@ -29,6 +29,10 @@ export class StartNodeModel extends CustomNodeModel<StartNodeModelGenerics> {
 		});
 	}
 
+	updateOptions(o : any){
+		this.options = {...o, ...this.options, }
+	}
+
 	doClone(lookupTable: any, clone: any): void {
 		super.doClone(lookupTable, clone);
 	}
