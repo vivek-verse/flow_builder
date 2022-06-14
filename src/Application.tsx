@@ -42,12 +42,29 @@ export class Application {
 										{ options : targetOptions }
 									} = targetPort;
 
+								let showError = false;
+
 								if(sourceOptions.dataType === 'start' && targetOptions.dataType === 'value'){
+									showError = true;
+								}else if(sourceOptions.dataType === 'string' && targetOptions.dataType === 'object'){
+									showError = true;
+								}else if(sourceOptions.dataType === 'string' && targetOptions.dataType === 'array'){
+									showError = true;
+								}else if(sourceOptions.dataType === 'object' && targetOptions.dataType === 'value'){
+									showError = true;
+								}else if(sourceOptions.dataType === 'object' && targetOptions.dataType === 'array'){
+									showError = true;
+								}else if(sourceOptions.dataType === 'start' && targetOptions.dataType === 'array'){
+									showError = true;
+								}
+
+								if(showError){
 									model.removeLink(link.entity);
-									this.toast.error("Connection not possible, try another node", {
+									this.toast.error("Connection not compatible, try another node", {
 										position: "bottom-center"
 									});
 								}
+
 							}
 						}
 					}
