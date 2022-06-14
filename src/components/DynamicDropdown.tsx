@@ -1,21 +1,21 @@
-import React, { useEffect, useState } from "react";
-import { DiagramContext, DiagramContextInterface } from "../../components/DiagramContext";
+import { useEffect, useState } from "react";
 import { Card, Select, Skeleton } from 'antd';
 import Meta from 'antd/lib/card/Meta';
 
 const { Option } = Select;
 
-export const RuleListDropdown = (props: { parentCallback: Function, value : string }): JSX.Element => {
+export const DynamicDropdown = (props: { parentCallback: Function, value : string, list : string[] }): JSX.Element => {
     const [value, setValue] = useState("");
-    const { rulesList } = React.useContext(DiagramContext) as DiagramContextInterface;
 
     let handleChange = (value : string) => {
         props.parentCallback(value);
         setValue(value);
     }
     
+    const list = props.list;
+
     useEffect(() => {
-        props.parentCallback(rulesList[0]);
+        props.parentCallback(list[0]);
     },[]);
 
     return (<Card
@@ -28,7 +28,7 @@ export const RuleListDropdown = (props: { parentCallback: Function, value : stri
                 />
                 <Select defaultValue={ props.value } style={{ display:'flex', marginTop:'5px' }} onChange={handleChange}>
                     {
-                        rulesList.map((item, i) => {
+                        list.map((item, i) => {
                             return <Option key = {i} value={item}>{item}</Option>
 
                         })

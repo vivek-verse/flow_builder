@@ -1,12 +1,13 @@
 import { CustomNodeWidget } from '../Custom';
 import { CustomNodeProps } from '../Custom';
 import { RuleNameValueNodeModel } from "./RuleNameValueNodeModel";
-import { RuleListDropdown } from "./RuleListDropdown";
+import { DiagramContext, DiagramContextInterface } from "../../components/DiagramContext";
+import { DynamicDropdown } from '../../components/DynamicDropdown';
 
 export interface RuleNameValueNodeProps extends CustomNodeProps<RuleNameValueNodeModel> {}
 
 export class RuleNameValueNodeWidget extends CustomNodeWidget<RuleNameValueNodeProps> {
-
+	static contextType = DiagramContext; 
 	public value = this.props.node.getOptions().title || "";
   
     handleCallback = (value : string) =>{
@@ -15,8 +16,10 @@ export class RuleNameValueNodeWidget extends CustomNodeWidget<RuleNameValueNodeP
     }
 
 	render() {
+		const { rulesList : list } = this.context as DiagramContextInterface;
+
 		return super.construct(
-			<RuleListDropdown value={this.value} parentCallback = { this.handleCallback } />
+				<DynamicDropdown list={list} value={this.value} parentCallback = { this.handleCallback } />
 		);
 	}
 }

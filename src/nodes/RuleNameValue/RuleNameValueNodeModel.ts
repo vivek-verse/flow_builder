@@ -20,7 +20,7 @@ export class RuleNameValueNodeModel extends CustomNodeModel<RuleNameValueNodeMod
 		}
 		super({
 			type: "RuleNameValue",
-			title: "RuleNameValue",
+			title: "",
 			text: "",
 			inputs: 1,
 			outputs: 0,
