@@ -200,8 +200,9 @@ export class BodyWidget extends React.Component {
 				}else if(typeof obj[key] === 'string'){
 					all.push(node);
 					const oPort = node.getOutPorts()[0];
-					const ValueModal = (Nodes as BasicObject)[obj[key]]
+					const ValueModal = (Nodes as BasicObject)[`${key}Next`];
 					const valueNode = new ValueModal();
+					valueNode.updateOptions({title : obj[key]});
 					valueNode.setPosition(250, 200);
 					valueNode.setupPorts();
 					const iPort = valueNode.getInPorts()[0];

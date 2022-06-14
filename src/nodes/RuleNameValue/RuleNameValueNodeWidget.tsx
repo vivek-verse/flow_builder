@@ -7,15 +7,16 @@ export interface RuleNameValueNodeProps extends CustomNodeProps<RuleNameValueNod
 
 export class RuleNameValueNodeWidget extends CustomNodeWidget<RuleNameValueNodeProps> {
 
-	public value = "";
+	public value = this.props.node.getOptions().title || "";
   
     handleCallback = (value : string) =>{
-		this.props.node.updateOptions({title : value})
+		this.value = value;
+		this.props.node.updateOptions({title : value});
     }
 
 	render() {
 		return super.construct(
-			<RuleListDropdown parentCallback = { this.handleCallback } />
+			<RuleListDropdown value={this.value} parentCallback = { this.handleCallback } />
 		);
 	}
 }

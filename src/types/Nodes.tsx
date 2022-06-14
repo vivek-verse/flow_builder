@@ -8,7 +8,7 @@ const nodeMap = {
     "start" : StartNodeModel,
     "rules" : RulesNodeModel,
     "ruleName" : RuleNameNodeModel,
-    "RuleNameValue" : RuleNameValueNodeModel,
+    "ruleNameNext" : RuleNameValueNodeModel,
     "derive" : DeriveNodeModel
 };
 

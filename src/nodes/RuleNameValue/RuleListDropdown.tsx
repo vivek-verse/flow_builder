@@ -5,7 +5,7 @@ import Meta from 'antd/lib/card/Meta';
 
 const { Option } = Select;
 
-export const RuleListDropdown = (props: { parentCallback: Function }): JSX.Element => {
+export const RuleListDropdown = (props: { parentCallback: Function, value : string }): JSX.Element => {
     const [value, setValue] = useState("");
     const { rulesList } = React.useContext(DiagramContext) as DiagramContextInterface;
 
@@ -26,7 +26,7 @@ export const RuleListDropdown = (props: { parentCallback: Function }): JSX.Eleme
                 <Meta
                     description="Select a rule"
                 />
-                <Select defaultValue={rulesList[0]} style={{ display:'flex', marginTop:'5px' }} onChange={handleChange}>
+                <Select defaultValue={ props.value } style={{ display:'flex', marginTop:'5px' }} onChange={handleChange}>
                     {
                         rulesList.map((item, i) => {
                             return <Option key = {i} value={item}>{item}</Option>
