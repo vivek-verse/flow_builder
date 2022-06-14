@@ -12,6 +12,9 @@ import { CustomNodeModel, CustomNodeModelGenerics, CustomNodeModelOptions } from
 import { AllNodeFactories, NodeFactories, UINodes } from '.';
 import { StartNodeModel } from '../nodes/Start';
 import Nodes from '../types/Nodes';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const { Panel } = Collapse;
 
 interface BasicObject {
@@ -65,9 +68,7 @@ namespace S {
 
 export class BodyWidget extends React.Component {
 	state = {
-		app: new Application(() => {
-			this.forceUpdate();
-		}),
+		app: new Application(toast),
 		visible : false
 	};
 
@@ -157,7 +158,6 @@ export class BodyWidget extends React.Component {
 		start.setPosition(50, 50);
 		start.setupPorts();
 		model.addAll(start);
-		app.registerListener(true);
 	};
 
 	async loadFile(app : Application){		
@@ -354,6 +354,18 @@ export class BodyWidget extends React.Component {
 						</Modal>
 					</S.Layer>
 				</S.Content>
+				<ToastContainer
+					position="bottom-center"
+					autoClose={5000}
+					hideProgressBar={false}
+					newestOnTop={false}
+					closeOnClick
+					rtl={false}
+					pauseOnFocusLoss
+					draggable
+					pauseOnHover
+					/>
+				<ToastContainer />
 			</S.Body>
 		);
 	}

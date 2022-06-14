@@ -7,14 +7,12 @@ import { NodeFactories } from './components';
 
 export class Application {
 	protected diagramEngine: DiagramEngine;
-	protected updateFunction: Function;
-
-	constructor(updateFunction: Function) {
-		this.updateFunction = updateFunction;
+	protected toast : any;
+	constructor(toast :  any) {
+		this.toast = toast;
 		this.diagramEngine = createEngine({ registerDefaultZoomCanvasAction: false, registerDefaultDeleteItemsAction: false });
 		this.diagramEngine.maxNumberPointsPerLink = 0;
 		this.newModel();
-		this.registerListener();
 	}
 
 	public getModel() {
@@ -23,6 +21,35 @@ export class Application {
 
 	public newModel() {    
 		const model = new DiagramModel();
+		model.registerListener({
+			linksUpdated:(event : any) => {
+				const { link, isCreated } = event;
+				link.registerListener({
+					targetPortChanged:(link  :any) => {
+						if(isCreated){
+							const {sourcePort, targetPort} = link.entity;
+
+							let { parent : 
+									{ options : sourceOptions }
+								} = sourcePort;
+
+							let { parent : 
+									{ options : targetOptions }
+								} = targetPort;
+
+							if(sourceOptions.dataType === 'start' && targetOptions.dataType === 'value'){
+								model.removeLink(link.entity);
+								this.toast.error("Connection not possible, try another node",
+								{
+									position: "bottom-center"
+								});
+							}
+						}
+					}
+				});				
+			  }
+		})
+
 		this.diagramEngine.setModel(model);
 		this.diagramEngine.getNodeFactories().registerFactory(new StartNodeFactory());
 		NodeFactories.forEach((factory) => this.diagramEngine.getNodeFactories().registerFactory(factory));
@@ -44,14 +71,4 @@ export class Application {
 		return this.diagramEngine;
 	}
 
-	public registerListener(update?: boolean): void {
-		this.diagramEngine.getModel().registerListener({
-			nodesUpdated: () => {
-				this.updateFunction();
-			},
-		});
-		if (update) {
-			this.updateFunction();
-		}
-	}
 }

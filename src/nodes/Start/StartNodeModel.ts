@@ -25,6 +25,7 @@ export class StartNodeModel extends CustomNodeModel<StartNodeModelGenerics> {
 			inputs: 0,
 			outputs: 1,
 			id : "start",
+			dataType : "start",
 			...options,
 		});
 	}
