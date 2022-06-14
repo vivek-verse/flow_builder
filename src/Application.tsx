@@ -28,21 +28,26 @@ export class Application {
 					targetPortChanged:(link  :any) => {
 						if(isCreated){
 							const {sourcePort, targetPort} = link.entity;
-
-							let { parent : 
-									{ options : sourceOptions }
-								} = sourcePort;
-
-							let { parent : 
-									{ options : targetOptions }
-								} = targetPort;
-
-							if(sourceOptions.dataType === 'start' && targetOptions.dataType === 'value'){
+							if(Object.keys(targetPort.getLinks()).length > 1){
 								model.removeLink(link.entity);
-								this.toast.error("Connection not possible, try another node",
-								{
+								this.toast.error("Two input connections to one node not allowed", {
 									position: "bottom-center"
 								});
+							}else{
+								let { parent : 
+										{ options : sourceOptions }
+									} = sourcePort;
+
+								let { parent : 
+										{ options : targetOptions }
+									} = targetPort;
+
+								if(sourceOptions.dataType === 'start' && targetOptions.dataType === 'value'){
+									model.removeLink(link.entity);
+									this.toast.error("Connection not possible, try another node", {
+										position: "bottom-center"
+									});
+								}
 							}
 						}
 					}
