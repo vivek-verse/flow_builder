@@ -180,7 +180,7 @@ export class BodyWidget extends React.Component {
 
 	loadData(app : Application, finalObj : BasicObject){
 		const all : CustomNodeModel<CustomNodeModelGenerics<CustomNodeModelOptions>> | LinkModel<LinkModelGenerics>[] = [];
-
+		this.clear(app);
 		const helper = (obj: BasicObject, prev : CustomNodeModel<CustomNodeModelGenerics<CustomNodeModelOptions>>) => {
 			const outPort = prev.getOutPorts()[0];
 			for(const key in obj){

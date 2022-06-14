@@ -9,11 +9,8 @@ import { DiagramContextProvider } from "./components/DiagramContext";
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
 root.render(
 		<DiagramContextProvider>
-		<React.StrictMode>
 			<BodyWidget/>
-		</React.StrictMode>
 		</DiagramContextProvider>
-
 );   
 
 reportWebVitals();

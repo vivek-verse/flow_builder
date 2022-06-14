@@ -1,22 +1,20 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Card, Select, Skeleton } from 'antd';
 import Meta from 'antd/lib/card/Meta';
 
 const { Option } = Select;
 
 export const DynamicDropdown = (props: { parentCallback: Function, value : string, list : string[] }): JSX.Element => {
-    const [value, setValue] = useState("");
 
     let handleChange = (value : string) => {
         props.parentCallback(value);
-        setValue(value);
     }
     
     const list = props.list;
 
     useEffect(() => {
         props.parentCallback(list[0]);
-    },[]);
+    },[list, props]);
 
     return (<Card
         style={{ width : 180 }}
