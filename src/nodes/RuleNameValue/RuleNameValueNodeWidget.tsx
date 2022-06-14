@@ -10,7 +10,7 @@ export class RuleNameValueNodeWidget extends CustomNodeWidget<RuleNameValueNodeP
 	static contextType = DiagramContext; 
 	public value = this.props.node.getOptions().title || "";
   
-    handleCallback = (value : string) =>{
+    handleCallback = (value : string) => {
 		this.value = value;
 		this.props.node.updateOptions({title : value});
     }

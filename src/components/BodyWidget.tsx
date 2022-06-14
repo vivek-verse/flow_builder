@@ -196,7 +196,11 @@ export class BodyWidget extends React.Component {
 						helper(o, node);
 					}
 				}else if(typeof obj[key]  === 'object' && !Array.isArray(obj[key])){
-					helper(obj[key], node);
+					if(Object.keys(obj[key]).length > 0){
+						helper(obj[key], node);
+					}else{
+						all.push(node);
+					}
 				}else if(typeof obj[key] === 'string'){
 					all.push(node);
 					const oPort = node.getOutPorts()[0];
