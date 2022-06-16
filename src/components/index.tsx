@@ -1,16 +1,18 @@
-import { BorderOuterOutlined, EditOutlined, ExportOutlined, OneToOneOutlined, StarOutlined } from "@ant-design/icons";
+import { BorderOuterOutlined, EditOutlined, ExportOutlined, FileTextOutlined, OneToOneOutlined, StarOutlined } from "@ant-design/icons";
 import { ArrayFactory } from "../nodes/Array";
 import { CustomNodeFactory, CustomNodeModelGenerics, CustomNodeModelOptions, CustomNodeModel } from "../nodes/Custom";
 import { DeriveFactory } from "../nodes/Derive";
 import { RuleNameValueFactory } from "../nodes/RuleNameValue";
 import { RuleNameFactory } from "../nodes/RuleName";
 import { RulesFactory } from "../nodes/Rules";
+import { InputFactory } from "../nodes/Input";
 export const NodeFactories: CustomNodeFactory<CustomNodeModel<CustomNodeModelGenerics<CustomNodeModelOptions>>>[] = [
     RulesFactory,
     RuleNameValueFactory,
     ArrayFactory,
     DeriveFactory,
-    RuleNameFactory
+    RuleNameFactory,
+    InputFactory
 ];
 
 export const UINodes = [
@@ -18,7 +20,8 @@ export const UINodes = [
     OneToOneOutlined,
     BorderOuterOutlined,
     ExportOutlined,
-    StarOutlined
+    StarOutlined,
+    FileTextOutlined
 ]
 
 export const AllNodeFactories: CustomNodeFactory<CustomNodeModel<CustomNodeModelGenerics<CustomNodeModelOptions>>>[] = [...NodeFactories];

@@ -7,7 +7,7 @@ export const DiagramContext = React.createContext<DiagramContextInterface | null
 
 export const DiagramContextProvider = (props : any) => {
 	const defaultDiagramContext: DiagramContextInterface = {
-        rulesList : ["OneToOne", "AffectByValue", "MakeLink"]
+        rulesList : ["OneToOne", "AffectByValue", "MakeLink", "DeriveObject", "Ignore", "LinkObject", "Loop", "SkipRow"]
 	};
 	return <DiagramContext.Provider value={defaultDiagramContext}>{props.children}</DiagramContext.Provider>;
 };

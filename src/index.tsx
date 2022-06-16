@@ -1,4 +1,3 @@
-import React from "react";
 import reportWebVitals from './reportWebVitals';
 import "./index.css";
 import ReactDOM from "react-dom/client";

@@ -26,8 +26,8 @@ export class Application {
 				const { link, isCreated } = event;
 				link.registerListener({
 					targetPortChanged:(link  :any) => {
+						const {sourcePort, targetPort} = link.entity;
 						if(isCreated){
-							const {sourcePort, targetPort} = link.entity;
 							if(Object.keys(targetPort.getLinks()).length > 1){
 								model.removeLink(link.entity);
 								this.toast.error("Two input connections to one node not allowed", {
@@ -54,12 +54,16 @@ export class Application {
 									showError = true;
 								}else if(sourceOptions.dataType === 'object' && targetOptions.dataType === 'array'){
 									showError = true;
-								}else if(sourceOptions.dataType === 'start' && targetOptions.dataType === 'array'){
+								}else if(sourceOptions.dataType === 'start' && targetOptions.dataType === 'array' && targetOptions.func === 'array' ){
 									showError = true;
 								}
 
 								if(showError){
 									model.removeLink(link.entity);
+									const sourcePort = link.entity.getSourcePort();
+									const targetPort = link.entity.getTargetPort();									
+									sourcePort?.getParent().getPort('out')?.removeLink(link.entity);
+									targetPort?.getParent().getPort('in')?.removeLink(link.entity);
 									this.toast.error("Connection not compatible, try another node", {
 										position: "bottom-center"
 									});

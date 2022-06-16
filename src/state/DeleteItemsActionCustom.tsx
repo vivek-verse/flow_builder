@@ -1,4 +1,5 @@
 import { Action, InputType } from "@projectstorm/react-canvas-core"
+import { DefaultLinkModel } from "@projectstorm/react-diagrams";
 import * as _ from 'lodash';
 import { StartNodeModel } from "../nodes/Start";
 
@@ -30,7 +31,13 @@ export class DeleteItemsActionCustom extends Action {
 				if (keyCodes.indexOf(keyCode) !== -1 && _.isEqual({ ctrlKey, shiftKey, altKey, metaKey }, modifiers)) {
 					_.forEach(this.engine.getModel().getSelectedEntities(), (model) => {
 						if(!(model instanceof StartNodeModel)){
-							if (!model.isLocked()) {
+							if (!model.isLocked()) {	
+								if(model instanceof DefaultLinkModel){
+									const sourcePort = model.getSourcePort();
+									const targetPort = model.getTargetPort();									
+									sourcePort?.getParent().getPort('out')?.removeLink(model);
+									targetPort?.getParent().getPort('in')?.removeLink(model);
+								}
 								model.remove();
 							}
 						}
