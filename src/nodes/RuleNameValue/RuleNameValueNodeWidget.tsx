@@ -19,7 +19,7 @@ export class RuleNameValueNodeWidget extends CustomNodeWidget<RuleNameValueNodeP
 		const { rulesList : list } = this.context as DiagramContextInterface;
 
 		return super.construct(
-				<DynamicDropdown list={list} value={this.value} parentCallback = { this.handleCallback } />
+				<DynamicDropdown list={list} value={this.value} parentCallback = { this.handleCallback } card={true} />
 		);
 	}
 }

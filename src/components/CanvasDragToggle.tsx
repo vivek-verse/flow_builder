@@ -2,7 +2,7 @@ import * as React from 'react';
 import { HelperButton, HelperWorkspaceWidget } from '../helpers/HelperWorkspaceWidget';
 import { CanvasWidget } from '@projectstorm/react-canvas-core';
 import { HelperCanvasWidget } from '../helpers/HelperCanvasWidget';
-
+import { DynamicDropdown } from './DynamicDropdown';
 export class CanvasDragToggle extends React.Component<any, any> {
 	enableDrag = () => {
 		const { engine } = this.props;
@@ -16,9 +16,13 @@ export class CanvasDragToggle extends React.Component<any, any> {
 		state.dragCanvas.config.allowDrag = false;
 	};
 
+    handleCallback = (value : string) => {
+
+    }
+
 	render() {
 		const { engine } = this.props;
-		return (   
+		return (    
 			<HelperWorkspaceWidget
 				buttons={[
 					<HelperButton key={1} onClick={this.enableDrag}>
@@ -31,7 +35,8 @@ export class CanvasDragToggle extends React.Component<any, any> {
 					<HelperButton key={4} onClick={this.props.loadFile}>Load</HelperButton>,
 					<HelperButton key={5} onClick={this.props.saveFile}>Save</HelperButton>,
 					<HelperButton key={6} onClick={this.props.clear}>Clear</HelperButton>,
-					<HelperButton key={7} onClick={this.props.showModal}>Show Config</HelperButton>
+					<HelperButton key={7} onClick={this.props.showModal}>Show Config</HelperButton>,
+					<DynamicDropdown list={[]} value={""} parentCallback = { this.handleCallback } card={false} />
 				]}>
 				<HelperCanvasWidget>
 					<CanvasWidget engine={engine} />
